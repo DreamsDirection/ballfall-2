@@ -5,6 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D),typeof(PolygonCollider2D))]
 public class PlayerController : MonoBehaviour
 {
+    public int Health;
     public bool IsDebug = false;
     public float Speed;
     private Rigidbody2D _rigidbody2D;
@@ -51,7 +52,6 @@ public class PlayerController : MonoBehaviour
             var horizontal = Input.mousePosition.x;
             if (horizontal < center) dir = Vector2.left;
             else if (horizontal > center) dir = Vector2.right;
-            Debug.Log(horizontal + "-" + center);
         }
         else dir= Vector2.zero;
     }
@@ -60,6 +60,15 @@ public class PlayerController : MonoBehaviour
         _rigidbody2D.velocity =
             Vector2.Lerp(_rigidbody2D.velocity, new Vector2(dir.x*Speed, _rigidbody2D.velocity.y), 0.1f);
         
+    }
+
+    public void MakeDamage()
+    {
+        Health--;
+        if (Health <= 0)
+        {
+            //TODO Проигрышь
+        }
     }
 
 

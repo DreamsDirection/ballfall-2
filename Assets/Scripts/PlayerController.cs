@@ -12,6 +12,10 @@ public class PlayerController : MonoBehaviour
     private Vector2 dir;
     private float center;
     
+    
+    
+    GameController GC=> GameController.GC;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -55,11 +59,14 @@ public class PlayerController : MonoBehaviour
         }
         else dir= Vector2.zero;
     }
+
+    
     void MoveUpdate()
     {
         _rigidbody2D.velocity =
             Vector2.Lerp(_rigidbody2D.velocity, new Vector2(dir.x*Speed, _rigidbody2D.velocity.y), 0.1f);
-        
+        GC.Score = Vector2.Distance(Vector2.zero, transform.position);
+            
     }
 
     public void MakeDamage()
@@ -67,7 +74,7 @@ public class PlayerController : MonoBehaviour
         Health--;
         if (Health <= 0)
         {
-            //TODO Проигрышь
+            GC.GameOver();
         }
     }
 
@@ -76,7 +83,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Spike"))
         {
-            Time.timeScale = 0;
+            GC.GameOver();
         }
     }
 }

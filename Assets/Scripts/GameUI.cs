@@ -9,6 +9,8 @@ public class GameUI : MonoBehaviour
     public Text TextScore;
 
     public GameObject MainMenuPanel;
+    public GameObject GameOverPanel;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +28,10 @@ public class GameUI : MonoBehaviour
     public void MainMenuIsActive(bool b)
     {
         MainMenuPanel.SetActive(b);
+    }
+    public void GameOverPanelIsActive(bool b)
+    {
+        GameOverPanel.SetActive(b);
     }
     
     public void GameOverPanelIsActive()

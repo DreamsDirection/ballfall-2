@@ -7,6 +7,8 @@ public class CameraController : MonoBehaviour
     public float Speed;
 
     public float SpeedMultiplier;
+
+    public bool Move = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,7 +18,7 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector2.down * Speed* Time.deltaTime);
+        if(Move)transform.Translate(Vector2.down * Speed* Time.deltaTime);
     }
 
     IEnumerator SpeedUp()

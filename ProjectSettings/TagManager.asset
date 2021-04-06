@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Spike
+  - Spike_2
+  - Hearth
+  - Shield
+  - Saw
+  - Time
   layers:
   - Default
   - TransparentFX

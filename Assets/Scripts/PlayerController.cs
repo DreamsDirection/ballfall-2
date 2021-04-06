@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public int Health;
+    public bool Shield;
     public bool IsDebug = false;
     public float Speed;
     private Rigidbody2D _rigidbody2D;
@@ -26,12 +27,14 @@ public class PlayerController : MonoBehaviour
         center = Screen.width / 2;
     }
 
+    private float t = 1;
     // Update is called once per frame
     void FixedUpdate()
     {
         if (IsDebug) InputUpdate2();
         else InputUpdate();
         MoveUpdate();
+        t -= Time.deltaTime;
     }
 
     void InputUpdate()
@@ -58,6 +61,9 @@ public class PlayerController : MonoBehaviour
             else if (horizontal > center) dir = Vector2.right;
         }
         else dir= Vector2.zero;
+
+        if (Input.GetKey(KeyCode.A)) dir = Vector2.left;
+        if ( Input.GetKey(KeyCode.D)) dir = Vector2.right;
     }
 
     
@@ -71,19 +77,58 @@ public class PlayerController : MonoBehaviour
 
     public void MakeDamage()
     {
-        Health--;
-        if (Health <= 0)
+        if (!Shield && t <= 0)
         {
-            GC.GameOver();
+            Health--;
+            if (Health <= 0)
+            {
+                GC.GameOver();
+            }
+            else
+                GC.UI.ChangeHealth(Health);
+
+            t = 1;
         }
+        else Shield = false;
     }
 
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("Spike"))
+        switch (other.gameObject.tag)
         {
+            case "Spike":
+            {
             GC.GameOver();
+                break;
+            }
+            case "Spike_2":
+            {
+                MakeDamage();
+                break;
+            }
+        }
+        
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        switch (other.gameObject.tag)
+        {
+            case "Hearth":
+            {
+                Health++;
+                GC.UI.ChangeHealth(Health);
+                Destroy(other.gameObject);
+                if (Health >= 3) Health = 3;
+                break;
+            }
+            case "Shield":
+            {
+                Destroy(other.gameObject);
+                Shield = true;
+                break;
+            }
         }
     }
 }

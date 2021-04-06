@@ -31,30 +31,35 @@ public class GameController : MonoBehaviour
         
     }
 
-
+    private float startSpeedCamera;
     public void StartGame()
     {
-        UI.MainMenuIsActive(false);
+        startSpeedCamera = Camera.Speed;
+        UI.HideMainMenu();
         Generator.NewGame();
         Ball.SetActive(true);
         Ball.GetComponent<PlayerController>().Health = 3;
         Camera.transform.position = new Vector3(0,0,-10);
         Camera.Move = true;
-        UI.GameOverPanelIsActive(false);
+        UI.HideGameOverPanel();
+        UI.ShowGamePanel();
     }
 
     public void GameOver()
     {
+        Camera.Speed = startSpeedCamera;
         Ball.transform.position = Vector2.zero;
         Ball.SetActive(false);
-        UI.GameOverPanelIsActive(true);
+        UI.ShowGameOverPanel();
         Camera.Move = false;
+        UI.HideGamePanel();
     }
 
     public void EndGame()
     {
-        UI.MainMenuIsActive(true);
-        UI.GameOverPanelIsActive(false);
+        UI.ShowMainMenu();
+        UI.HideGameOverPanel();
+        UI.HideGamePanel();
     }
     
 }

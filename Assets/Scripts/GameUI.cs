@@ -10,6 +10,9 @@ public class GameUI : MonoBehaviour
 
     public GameObject MainMenuPanel;
     public GameObject GameOverPanel;
+    public GameObject GamePanel;
+
+    public List<GameObject> Health = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
@@ -20,23 +23,47 @@ public class GameUI : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        TextScore.text = GC.Score.ToString();
+        TextScore.text = Mathf.Round(GC.Score).ToString();
     }
 
 
 
-    public void MainMenuIsActive(bool b)
+    public void HideMainMenu()
     {
-        MainMenuPanel.SetActive(b);
+        MainMenuPanel.SetActive(false);
     }
-    public void GameOverPanelIsActive(bool b)
+
+    public void ShowMainMenu()
     {
-        GameOverPanel.SetActive(b);
+        MainMenuPanel.SetActive(true);
     }
-    
-    public void GameOverPanelIsActive()
+
+    public void HideGameOverPanel()
     {
-        
+        GameOverPanel.SetActive(false);
+    }
+
+    public void ShowGameOverPanel()
+    {
+        GameOverPanel.SetActive(true);
+    }
+
+    public void HideGamePanel()
+    {
+        GamePanel.SetActive(false);
+    }
+
+    public void ShowGamePanel()
+    {
+        GamePanel.SetActive(true);
+    }
+
+    public void ChangeHealth(int count)
+    {
+        for (int i = 2; i >= count; i--)
+        {
+            Health[i].SetActive(false);
+        }
     }
 
 }

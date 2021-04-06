@@ -16,9 +16,9 @@ public class MapGenerator : MonoBehaviour
 
     void Update()
     {
-        if (LastLines.Count > 4)
+        if (LastLines.Count > 0)
         {
-            float dis = Vector2.Distance(transform.position, LastLines[LastLines.Count-1].transform.position);
+            float dis = Vector2.Distance(transform.position, LastLines[LastLines.Count - 1].transform.position);
             if (dis > DistanceBetweenPlatforms)
                 Spawn();
         }
@@ -45,13 +45,13 @@ public class MapGenerator : MonoBehaviour
     public void NewGame()
     {
         Vector2 startPos = new Vector2(0,-5);
-        var offset = 5;
+        var offset = DistanceBetweenPlatforms;
         foreach (var line in LastLines)
         {
             Destroy(line);
         }
         LastLines.Clear();
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 3; i++)
         {
             Spawn(startPos);
             startPos.y -= offset;

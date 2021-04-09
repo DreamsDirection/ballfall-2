@@ -5,6 +5,11 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
+    public float BallSpeed;
+    public float BallGravity;
+    public float CameraStartSpeed;
+    public float CameraSpeedMultiplier;
+    public float CameraMaxSpeed;
     public static GameController GC;
     public float Score= 0;
 
@@ -31,23 +36,24 @@ public class GameController : MonoBehaviour
         
     }
 
-    private float startSpeedCamera;
     public void StartGame()
     {
-        startSpeedCamera = Camera.Speed;
         UI.HideMainMenu();
         Generator.NewGame();
+        Ball.transform.position = Vector2.zero;
         Ball.SetActive(true);
-        Ball.GetComponent<PlayerController>().Health = 3;
         Camera.transform.position = new Vector3(0,0,-10);
         Camera.Move = true;
         UI.HideGameOverPanel();
         UI.ShowGamePanel();
+        
+        
+        Ball.GetComponent<PlayerController>().Init();
+        Camera.Init();
     }
 
     public void GameOver()
     {
-        Camera.Speed = startSpeedCamera;
         Ball.transform.position = Vector2.zero;
         Ball.SetActive(false);
         UI.ShowGameOverPanel();
@@ -60,6 +66,10 @@ public class GameController : MonoBehaviour
         UI.ShowMainMenu();
         UI.HideGameOverPanel();
         UI.HideGamePanel();
+        Ball.SetActive(false);
+        Camera.Move = false;
+
     }
+
     
 }

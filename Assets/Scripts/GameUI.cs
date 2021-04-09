@@ -60,9 +60,15 @@ public class GameUI : MonoBehaviour
 
     public void ChangeHealth(int count)
     {
-        for (int i = 2; i >= count; i--)
+        int c = count;
+        for (int i = 0; i <3; i++)
         {
-            Health[i].SetActive(false);
+            if (c > 0)
+            {
+                c--;
+                Health[i].SetActive(true);
+            }
+            else Health[i].SetActive(false);
         }
     }
 

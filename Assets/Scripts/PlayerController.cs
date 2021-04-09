@@ -2,13 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[RequireComponent(typeof(Rigidbody2D),typeof(PolygonCollider2D))]
+[RequireComponent(typeof(Rigidbody2D),typeof(CircleCollider2D))]
 public class PlayerController : MonoBehaviour
 {
     public int Health;
     public bool Shield;
     public bool IsDebug = false;
-    public float Speed;
+    float Speed => GC.BallSpeed;
+    private float gravity => GC.BallGravity;
     private Rigidbody2D _rigidbody2D;
     private Vector2 dir;
     private float center;
@@ -20,11 +21,19 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Init();
+    }
+
+    public void Init()
+    {
         TryGetComponent(out Rigidbody2D rb);
         if (rb) _rigidbody2D = rb;
         else _rigidbody2D = gameObject.AddComponent<Rigidbody2D>();
         Screen.SetResolution(1080,1920,FullScreenMode.FullScreenWindow);
         center = Screen.width / 2;
+        Health = 3;
+        rb.gravityScale = gravity;
+        GC.UI.ChangeHealth(Health);
     }
 
     private float t = 1;
@@ -70,7 +79,7 @@ public class PlayerController : MonoBehaviour
     void MoveUpdate()
     {
         _rigidbody2D.velocity =
-            Vector2.Lerp(_rigidbody2D.velocity, new Vector2(dir.x*Speed, _rigidbody2D.velocity.y), 0.1f);
+            Vector2.Lerp(_rigidbody2D.velocity, new Vector2(dir.x*Speed, _rigidbody2D.velocity.y), 0.5f);
         GC.Score = Vector2.Distance(Vector2.zero, transform.position);
             
     }
@@ -81,10 +90,8 @@ public class PlayerController : MonoBehaviour
         {
             Health--;
             if (Health <= 0)
-            {
                 GC.GameOver();
-            }
-            else
+                else
                 GC.UI.ChangeHealth(Health);
 
             t = 1;
@@ -95,7 +102,8 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        switch (other.gameObject.tag)
+        Debug.Log("Collision enrer");
+        switch (other.collider.tag)
         {
             case "Spike":
             {
@@ -115,6 +123,11 @@ public class PlayerController : MonoBehaviour
     {
         switch (other.gameObject.tag)
         {
+            case "Spike_2":
+            {
+                MakeDamage();
+                break;
+            }
             case "Hearth":
             {
                 Health++;

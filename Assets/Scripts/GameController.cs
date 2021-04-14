@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
     public MapGenerator Generator;
     public GameObject Ball;
     public CameraController Camera;
+    public ControllType controllType = ControllType.LeftRight;
 
     private void Awake()
     {
@@ -71,5 +72,27 @@ public class GameController : MonoBehaviour
 
     }
 
+    public void SetAccelerometerControll()
+    {
+        controllType = ControllType.Accelerometer;
+    }
+
+    public void SetTouchControll()
+    {
+        controllType = ControllType.Touch;
+    }
+
+    public void SetLeftRightControll()
+    {
+        controllType = ControllType.LeftRight;
+    }
+
     
+}
+
+public enum ControllType
+{
+    LeftRight,
+    Accelerometer,
+    Touch
 }

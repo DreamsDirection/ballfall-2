@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 [RequireComponent(typeof(Rigidbody2D),typeof(CircleCollider2D))]
 public class PlayerController : MonoBehaviour
 {
@@ -13,7 +15,8 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D _rigidbody2D;
     private Vector2 dir;
     private float center;
-    
+
+    private SpriteRenderer Image;    
     
     
     GameController GC=> GameController.GC;
@@ -29,6 +32,7 @@ public class PlayerController : MonoBehaviour
         TryGetComponent(out Rigidbody2D rb);
         if (rb) _rigidbody2D = rb;
         else _rigidbody2D = gameObject.AddComponent<Rigidbody2D>();
+        Image = GetComponent<SpriteRenderer>();
         Screen.SetResolution(1080,1920,FullScreenMode.FullScreenWindow);
         center = Screen.width / 2;
         Health = 3;
@@ -42,7 +46,25 @@ public class PlayerController : MonoBehaviour
     {
         if (IsDebug) InputUpdate2();
         else InputUpdate();
-        MoveUpdate();
+
+        switch (GC.controllType)
+        {
+            case ControllType.Accelerometer:
+            {
+                MoveUpdateAccelerometer();
+                break;
+            }
+            case ControllType.Touch:
+            {
+                MoveUpdateTouch();
+                break;
+            }
+            case ControllType.LeftRight:
+            {
+                MoveUpdateLeftRight();
+                break;
+            }
+        }
         t -= Time.deltaTime;
     }
 
@@ -76,12 +98,30 @@ public class PlayerController : MonoBehaviour
     }
 
     
-    void MoveUpdate()
+    void MoveUpdateLeftRight()
     {
         _rigidbody2D.velocity =
             Vector2.Lerp(_rigidbody2D.velocity, new Vector2(dir.x*Speed, _rigidbody2D.velocity.y), 0.5f);
         GC.Score = Vector2.Distance(Vector2.zero, transform.position);
             
+    }
+
+    private Vector3 lowPassValue = Vector3.zero;
+    void MoveUpdateAccelerometer()
+    {
+        lowPassValue = Vector3.Lerp(lowPassValue, Input.acceleration, (1f/60f) / 1);
+        _rigidbody2D.velocity =
+            Vector2.Lerp(_rigidbody2D.velocity, new Vector2(lowPassValue.x*Speed, _rigidbody2D.velocity.y), 0.5f);
+        GC.Score = Vector2.Distance(Vector2.zero, transform.position);
+    }
+
+    void MoveUpdateTouch()
+    {
+        if (Input.touchCount > 0)
+        {
+            Vector2 d = Input.GetTouch(0).position;
+            transform.Translate(new Vector2(d.x,transform.position.y));
+        }
     }
 
     public void MakeDamage()
@@ -91,12 +131,17 @@ public class PlayerController : MonoBehaviour
             Health--;
             if (Health <= 0)
                 GC.GameOver();
-                else
+            else
                 GC.UI.ChangeHealth(Health);
 
             t = 1;
         }
-        else Shield = false;
+        else
+        {
+            Shield = false;
+            Image.color = Color.white;
+            t = 1;
+        }
     }
 
 
@@ -111,6 +156,11 @@ public class PlayerController : MonoBehaviour
                 break;
             }
             case "Spike_2":
+            {
+                MakeDamage();
+                break;
+            }
+            case "Saw":
             {
                 MakeDamage();
                 break;
@@ -140,6 +190,13 @@ public class PlayerController : MonoBehaviour
             {
                 Destroy(other.gameObject);
                 Shield = true;
+                Image.color = Color.green;
+                break;
+            }
+            case "Time":
+            {
+                Destroy(other.gameObject);
+                GC.Camera.ResetSpeed();
                 break;
             }
         }

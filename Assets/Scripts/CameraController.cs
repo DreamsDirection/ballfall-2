@@ -38,4 +38,10 @@ public class CameraController : MonoBehaviour
             Speed += SpeedMultiplier;
         }
     }
+
+    public void ResetSpeed()
+    {
+        Speed -= Speed * 0.2f;
+        if (Speed < GC.CameraStartSpeed) Speed = GC.CameraStartSpeed;
+    }
 }

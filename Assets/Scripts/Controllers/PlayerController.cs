@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using BallFall.Controllers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,7 +9,7 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     public int Health;
-    public bool Shield;
+    public bool Shield = false;
     public bool IsDebug = false;
     float Speed => GC.BallSpeed;
     private float gravity => GC.BallGravity;
@@ -102,7 +103,7 @@ public class PlayerController : MonoBehaviour
     {
         _rigidbody2D.velocity =
             Vector2.Lerp(_rigidbody2D.velocity, new Vector2(dir.x*Speed, _rigidbody2D.velocity.y), 0.5f);
-        GC.Score = Vector2.Distance(Vector2.zero, transform.position);
+        GC.GameScore = Vector2.Distance(Vector2.zero, transform.position);
             
     }
 
@@ -112,7 +113,7 @@ public class PlayerController : MonoBehaviour
         lowPassValue = Vector3.Lerp(lowPassValue, Input.acceleration, (1f/60f) / 1);
         _rigidbody2D.velocity =
             Vector2.Lerp(_rigidbody2D.velocity, new Vector2(lowPassValue.x*Speed, _rigidbody2D.velocity.y), 0.5f);
-        GC.Score = Vector2.Distance(Vector2.zero, transform.position);
+        GC.GameScore = Vector2.Distance(Vector2.zero, transform.position);
     }
 
     void MoveUpdateTouch()
@@ -122,7 +123,10 @@ public class PlayerController : MonoBehaviour
             Vector2 d = Input.GetTouch(0).position;
             transform.Translate(new Vector2(d.x,transform.position.y));
         }
+        GC.GameScore = Vector2.Distance(Vector2.zero, transform.position);
     }
+    
+    
 
     public void MakeDamage()
     {
@@ -136,10 +140,13 @@ public class PlayerController : MonoBehaviour
 
             t = 1;
         }
-        else
+        else if(Shield)
         {
             Shield = false;
             Image.color = Color.white;
+        }
+        else
+        {
             t = 1;
         }
     }

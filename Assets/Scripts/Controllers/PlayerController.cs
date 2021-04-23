@@ -62,6 +62,8 @@ namespace Controllers
 
         public void Move(Vector2 direct)
         {
+            var dir = direct * ball.Speed;
+            dir.y = _rigidbody2D.velocity.y;
             _rigidbody2D.velocity = Vector2.Lerp(_rigidbody2D.velocity, direct, 0.2f);
         }
 
@@ -74,6 +76,7 @@ namespace Controllers
                 if (ball.Health <= 0)
                 {
                     GC.GameOver();
+                    UIController.UI.GetUI<UIGameOver>().Show();
                     UIController.UI.ShowUI<UIGameOver>();
                 }
                 else
@@ -101,7 +104,9 @@ namespace Controllers
             {
                 case "Spike":
                 {
-                    GC.GameOver();
+                    UIController.UI.ShowUI<UIGameOver>();
+                    UIController.UI.GetUI<UIGameOver>().Show();
+                    UIController.UI.ShowUI<UIGameOver>();
                     break;
                 }
                 case "Spike_2":

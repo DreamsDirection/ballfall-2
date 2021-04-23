@@ -17,6 +17,12 @@ public class StartSettings : MonoBehaviour
     GameController GC => GameController.GC;
 
 
+    private void Start()
+    {
+        Load();
+        Setup();
+        gameObject.SetActive(false);
+    }
 
     public void Setup()
     {
@@ -25,8 +31,7 @@ public class StartSettings : MonoBehaviour
         GC.CameraStartSpeed = (float) Convert.ToDouble(CamStartSpeed.text);
         GC.CameraSpeedMultiplier = (float) Convert.ToDouble(CamSpeedMultiplier.text);
         GC.CameraMaxSpeed = (float) Convert.ToDouble(CamMaxSpeed.text);
-Save();
-        GC.StartGame();
+        Save();
     }
 
 

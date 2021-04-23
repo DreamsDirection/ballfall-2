@@ -32,6 +32,17 @@ namespace Controllers.UI
             UI.ShowUI<UIShop>();
         }
 
+        public void Return()
+        {
+            UIController.UI.ShowUI<UIMainMenu>();
+        }
+
+        public void Restart()
+        {
+            UIController.UI.ShowUI<UIGame>();
+            GameController.GC.StartGame();
+        }
+
         public void ContinueAD()
         {
 

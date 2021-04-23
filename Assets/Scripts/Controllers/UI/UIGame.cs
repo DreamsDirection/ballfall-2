@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,12 +8,27 @@ namespace Controllers.UI
     public class UIGame : MonoBehaviour
     {
         public List<Image> hearths = new List<Image>();
+        public Text ScoreText;
         public GameObject pausePanel;
-        
-        
+
+
+        private PlayerController player => GameController.GC.Ball;
+
+        private void Start()
+        {
+        }
+
+        private void Update()
+        {
+            string txt;
+            float dis = (Mathf.Round(Vector2.Distance(player.transform.position, Vector2.zero)));
+            txt = dis.ToString();
+            ScoreText.text = txt;
+        }
+
         public void ChangeHealth()
         {
-            int count = GameController.GC.Ball.ball.Health;
+            int count = player.ball.Health;
             for (int i = 3; i > 0; i--)
             {
                 if (i <= count) hearths[i].enabled = true;

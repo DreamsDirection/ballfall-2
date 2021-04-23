@@ -36,6 +36,7 @@ namespace Controllers.UI
             l_ui.Add(shopUI);
             l_ui.Add(gameOverUI);
             l_ui.Add(mainMenuUI);
+            ShowUI<UIMainMenu>();
         }
         public void ShowUI<T>() where T : MonoBehaviour
         {

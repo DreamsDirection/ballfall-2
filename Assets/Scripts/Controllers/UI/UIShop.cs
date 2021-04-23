@@ -1,4 +1,5 @@
 ﻿
+using System.Collections;
 using System.Collections.Generic;
 using Controllers.UI;
 using Items;
@@ -14,6 +15,7 @@ namespace Controllers.UI
     {
         public GameObject ShopCell;
         public GameObject ShopGrid;
+        public SOHolder soHolder;
 
 
         private List<Cell> L_Cells = new List<Cell>();
@@ -22,11 +24,11 @@ namespace Controllers.UI
 
         private void Start()
         {
-            SOItem[] items = Resources.FindObjectsOfTypeAll<SOItem>(); 
-            holder.Init(items);
+            holder.Init(soHolder.Items);
             ClearCells();
             SetupCells();
         }
+
 
         void ClearCells()
         {

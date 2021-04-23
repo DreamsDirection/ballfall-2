@@ -9,11 +9,26 @@ namespace Controllers.UI
     {
         GameController gc => GameController.GC;
 
+        public GameObject SoundSlider;
         private void Start()
         {
             SetControlType<InputControllerTouch>();
         }
 
+        public void SoundMute(bool value)
+        {
+            SoundSlider.SetActive(value);
+            
+        }
+
+        public void SoundSliderValueChanged(float value)
+        {
+            
+        }
+        public void Return()
+        {
+            UIController.UI.ShowUI<UIMainMenu>();
+        }
         public void SetControll(int id)
         {
             switch (id)

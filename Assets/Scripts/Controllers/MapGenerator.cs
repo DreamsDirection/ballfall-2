@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Controllers;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
@@ -10,13 +11,14 @@ public class MapGenerator : MonoBehaviour
 
 
     private List<GameObject> LastLines = new List<GameObject>();
+    private GameState state => GameController.GC.GameState;
     void Start()
     {
     }
 
     void Update()
     {
-        if (LastLines.Count > 0)
+        if (LastLines.Count > 0 && state == GameState.Play)
         {
             float dis = Vector2.Distance(transform.position, LastLines[LastLines.Count - 1].transform.position);
             if (dis > DistanceBetweenPlatforms)

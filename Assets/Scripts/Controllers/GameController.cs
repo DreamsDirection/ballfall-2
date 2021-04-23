@@ -44,6 +44,7 @@ namespace Controllers
         // Start is called before the first frame update
         void Start()
         {
+            GameState = GameState.Menu;
             Load();
             UIController.UI.ShowUI<UIMainMenu>();
         }

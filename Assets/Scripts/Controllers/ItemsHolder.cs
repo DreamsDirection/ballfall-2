@@ -8,23 +8,22 @@ using UnityEditor;
 
 namespace Items.Controller
 {
-    public class ItemsHolder : MonoBehaviour
+    public class ItemsHolder
     {
-        [SerializeField]List<SOItem> L_Items = new List<SOItem>();
+        private SOItem[] items;
         // <Уникальный номер, экземпляр класса>
         private Dictionary<int, Item> Items = new Dictionary<int, Item>();
         public int ItemsCount => Items.Count;
 
-        private void Start()
+        public void Init(SOItem[] list)
         {
-            Init();
-        }
-
-        void Init()
-        {
-            for (int i = 0; i< L_Items.Count; i++)
+            Debug.Log("Init");
+            items = list;
+            
+            for (int i = 0; i< items.Length; i++)
             {
-                Item item = new Item(L_Items[i], i);
+                Debug.Log(items[i].name);
+                Item item = new Item(items[i], i);
                 Items.Add(i,item);
             }
         }

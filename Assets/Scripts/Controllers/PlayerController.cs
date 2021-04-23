@@ -1,210 +1,153 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using BallFall.Controllers;
+using Controllers;
+using Controllers.UI;
+using Items.Models;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Rigidbody2D),typeof(CircleCollider2D))]
-public class PlayerController : MonoBehaviour
+namespace Controllers
 {
-    public int Health;
-    public bool Shield = false;
-    public bool IsDebug = false;
-    float Speed => GC.BallSpeed;
-    private float gravity => GC.BallGravity;
-    private Rigidbody2D _rigidbody2D;
-    private Vector2 dir;
-    private float center;
-
-    private SpriteRenderer Image;    
-    
-    
-    GameController GC=> GameController.GC;
-    
-    // Start is called before the first frame update
-    void Start()
+    public class PlayerController : MonoBehaviour
     {
-        Init();
-    }
+        public Ball ball { get; private set; }
 
-    public void Init()
-    {
-        TryGetComponent(out Rigidbody2D rb);
-        if (rb) _rigidbody2D = rb;
-        else _rigidbody2D = gameObject.AddComponent<Rigidbody2D>();
-        Image = GetComponent<SpriteRenderer>();
-        Screen.SetResolution(1080,1920,FullScreenMode.FullScreenWindow);
-        center = Screen.width / 2;
-        Health = 3;
-        rb.gravityScale = gravity;
-        GC.UI.ChangeHealth(Health);
-    }
+        private Rigidbody2D _rigidbody2D;
+        private SpriteRenderer _spriteRenderer;
 
-    private float t = 1;
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        if (IsDebug) InputUpdate2();
-        else InputUpdate();
+        GameController GC => GameController.GC;
+        private UIGame _uiGame;
 
-        switch (GC.controllType)
+
+        private float _timer;
+
+        void Start()
         {
-            case ControllType.Accelerometer:
+            ball = new Ball()
             {
-                MoveUpdateAccelerometer();
-                break;
-            }
-            case ControllType.Touch:
-            {
-                MoveUpdateTouch();
-                break;
-            }
-            case ControllType.LeftRight:
-            {
-                MoveUpdateLeftRight();
-                break;
-            }
+                AttackInterval = 1,
+                BallGravity = GC.BallGravity,
+                Health = 3,
+                IsDebug = false,
+                Shield = false,
+                Speed = GC.BallSpeed
+            };
+            _uiGame = UIController.UI.GetUI<UIGame>();
+            Init();
         }
-        t -= Time.deltaTime;
-    }
 
-    void InputUpdate()
-    {
-        Touch touch;
-        if (Input.touchCount > 0)
+        private void Update()
         {
-            touch = Input.GetTouch(0);
-            var horizontal = touch.position.x;
-
-
-            if (horizontal < center) dir = Vector2.left;
-            else if (horizontal > center) dir = Vector2.right;
+            _timer -= Time.deltaTime;
         }
-        else dir= Vector2.zero;
-    }
 
-    void InputUpdate2()
-    {
-        if (Input.GetMouseButton(0))
+        public void Init()
         {
-            var horizontal = Input.mousePosition.x;
-            if (horizontal < center) dir = Vector2.left;
-            else if (horizontal > center) dir = Vector2.right;
-        }
-        else dir= Vector2.zero;
-
-        if (Input.GetKey(KeyCode.A)) dir = Vector2.left;
-        if ( Input.GetKey(KeyCode.D)) dir = Vector2.right;
-    }
-
-    
-    void MoveUpdateLeftRight()
-    {
-        _rigidbody2D.velocity =
-            Vector2.Lerp(_rigidbody2D.velocity, new Vector2(dir.x*Speed, _rigidbody2D.velocity.y), 0.5f);
-        GC.GameScore = Vector2.Distance(Vector2.zero, transform.position);
+            ball ??= new Ball()
+            {
+                AttackInterval = 1,
+                BallGravity = GC.BallGravity,
+                Health = 3,
+                IsDebug = false,
+                Shield = false,
+                Speed = GC.BallSpeed
+            };
             
-    }
-
-    private Vector3 lowPassValue = Vector3.zero;
-    void MoveUpdateAccelerometer()
-    {
-        lowPassValue = Vector3.Lerp(lowPassValue, Input.acceleration, (1f/60f) / 1);
-        _rigidbody2D.velocity =
-            Vector2.Lerp(_rigidbody2D.velocity, new Vector2(lowPassValue.x*Speed, _rigidbody2D.velocity.y), 0.5f);
-        GC.GameScore = Vector2.Distance(Vector2.zero, transform.position);
-    }
-
-    void MoveUpdateTouch()
-    {
-        if (Input.touchCount > 0)
-        {
-            Vector2 d = Input.GetTouch(0).position;
-            transform.Translate(new Vector2(d.x,transform.position.y));
+            _rigidbody2D = TryGetComponent(out Rigidbody2D rb) ? rb : gameObject.AddComponent<Rigidbody2D>();
+            if (TryGetComponent(out SpriteRenderer render)) _spriteRenderer = render;
+            _rigidbody2D.gravityScale = ball.BallGravity;
+            transform.position = Vector2.zero;
         }
-        GC.GameScore = Vector2.Distance(Vector2.zero, transform.position);
-    }
-    
-    
 
-    public void MakeDamage()
-    {
-        if (!Shield && t <= 0)
+        public void Move(Vector2 direct)
         {
-            Health--;
-            if (Health <= 0)
-                GC.GameOver();
+            _rigidbody2D.velocity = Vector2.Lerp(_rigidbody2D.velocity, direct, 0.2f);
+        }
+
+
+        public void MakeDamage()
+        {
+            if (!ball.Shield && _timer <= 0)
+            {
+                ball.Health--;
+                if (ball.Health <= 0)
+                {
+                    GC.GameOver();
+                    UIController.UI.ShowUI<UIGameOver>();
+                }
+                else
+                {
+                    _uiGame.ChangeHealth();
+                    _timer = ball.AttackInterval;
+                }
+            }
+            else if (ball.Shield)
+            {
+                ball.Shield = false;
+                _spriteRenderer.color = Color.white;
+            }
             else
-                GC.UI.ChangeHealth(Health);
-
-            t = 1;
-        }
-        else if(Shield)
-        {
-            Shield = false;
-            Image.color = Color.white;
-        }
-        else
-        {
-            t = 1;
-        }
-    }
-
-
-    private void OnCollisionEnter2D(Collision2D other)
-    {
-        Debug.Log("Collision enrer");
-        switch (other.collider.tag)
-        {
-            case "Spike":
             {
-            GC.GameOver();
-                break;
-            }
-            case "Spike_2":
-            {
-                MakeDamage();
-                break;
-            }
-            case "Saw":
-            {
-                MakeDamage();
-                break;
+                _timer = ball.AttackInterval;
             }
         }
-        
-    }
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        switch (other.gameObject.tag)
+
+        private void OnCollisionEnter2D(Collision2D other)
         {
-            case "Spike_2":
+            Debug.Log("Collision enrer");
+            switch (other.collider.tag)
             {
-                MakeDamage();
-                break;
+                case "Spike":
+                {
+                    GC.GameOver();
+                    break;
+                }
+                case "Spike_2":
+                {
+                    MakeDamage();
+                    break;
+                }
+                case "Saw":
+                {
+                    MakeDamage();
+                    break;
+                }
             }
-            case "Hearth":
+
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            switch (other.gameObject.tag)
             {
-                Health++;
-                GC.UI.ChangeHealth(Health);
-                Destroy(other.gameObject);
-                if (Health >= 3) Health = 3;
-                break;
-            }
-            case "Shield":
-            {
-                Destroy(other.gameObject);
-                Shield = true;
-                Image.color = Color.green;
-                break;
-            }
-            case "Time":
-            {
-                Destroy(other.gameObject);
-                GC.Camera.ResetSpeed();
-                break;
+                case "Spike_2":
+                {
+                    MakeDamage();
+                    break;
+                }
+                case "Hearth":
+                {
+                    ball.Health++;
+                    UIController.UI.ShowUI<UIGameOver>();
+                    Destroy(other.gameObject);
+                    if (ball.Health >= 3) ball.Health = 3;
+                    break;
+                }
+                case "Shield":
+                {
+                    Destroy(other.gameObject);
+                    ball.Shield = true;
+                    _spriteRenderer.color = Color.green;
+                    break;
+                }
+                case "Time":
+                {
+                    Destroy(other.gameObject);
+                    GC.Camera.ResetSpeed();
+                    break;
+                }
             }
         }
     }

@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e51b75a82e3e472092eff563aa9e4951, type: 3}
   m_Name: SOItem_01
   m_EditorClassIdentifier: 
-  Image: {fileID: 0}
-  Price: 0
+  Image: {fileID: -2413806693520163455, guid: 15473e8f4e9853242a21211f05fb638e, type: 3}
+  Price: 10

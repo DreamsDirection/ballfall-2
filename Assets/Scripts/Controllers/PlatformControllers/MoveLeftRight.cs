@@ -2,17 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class   MoveLeftRight : MonoBehaviour
+namespace Controllers.PlatformControllers
 {
-    public float Speed;
-    public float Left;
-    public float Right;
-    private Vector2 dir = Vector2.left;
-    void FixedUpdate()
+    public class MoveLeftRight : MonoBehaviour
     {
-        if(transform.position.x <= Left) dir = Vector2.right;
-        if(transform.position.x >= Right) dir = Vector2.left; 
-        transform.Translate(dir * Speed* Time.deltaTime);
+        public float speed;
+        public float left;
+        public float right;
+        private Vector2 _direct = Vector2.left;
 
+        void FixedUpdate()
+        {
+            if (transform.position.x <= left) _direct = Vector2.right;
+            if (transform.position.x >= right) _direct = Vector2.left;
+            var dir = _direct * speed;
+            transform.Translate(dir * Time.deltaTime);
+
+        }
     }
 }

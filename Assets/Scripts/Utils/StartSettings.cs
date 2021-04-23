@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using BallFall.Controllers;
+using Controllers;
 using UnityEngine;
 using UnityEngine.UI;
 

@@ -1,36 +1,40 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Controllers;
 using UnityEngine;
 
-public class TimeScript : MonoBehaviour
+namespace Controllers.PlatformControllers
 {
-    public float Times;
-
-    public bool IsDamage;
-    private PlayerController player;
-
-    IEnumerator StartTime()
+    public class TimeScript : MonoBehaviour
     {
-        yield return new WaitForSeconds(Times);
-        if (IsDamage && player) player.MakeDamage(); 
-        Destroy(gameObject);
-    }
+        public float times;
 
-    private void OnCollisionEnter2D(Collision2D other)
-    {
-        if (other.gameObject.CompareTag("Player"))
+        public bool isDamage;
+        private PlayerController _player;
+
+        IEnumerator StartTime()
         {
-            player = other.gameObject.GetComponent<PlayerController>();
-            StartCoroutine(StartTime());
+            yield return new WaitForSeconds(times);
+            if (isDamage && _player) _player.MakeDamage();
+            Destroy(gameObject);
         }
-    }
 
-    private void OnCollisionExit2D(Collision2D other)
-    {
-        if (other.gameObject.CompareTag("Player"))
+        private void OnCollisionEnter2D(Collision2D other)
         {
-            player = null;
+            if (other.gameObject.CompareTag("Player"))
+            {
+                _player = other.gameObject.GetComponent<PlayerController>();
+                StartCoroutine(StartTime());
+            }
+        }
+
+        private void OnCollisionExit2D(Collision2D other)
+        {
+            if (other.gameObject.CompareTag("Player"))
+            {
+                _player = null;
+            }
         }
     }
 }

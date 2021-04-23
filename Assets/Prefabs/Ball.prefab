@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 9023266010835564923}
   - component: {fileID: 1058000526954750911}
-  - component: {fileID: 1799740727996185261}
   - component: {fileID: 2126663541138533046}
   - component: {fileID: 720089948}
+  - component: {fileID: 2291205353192454165}
   m_Layer: 0
   m_Name: Ball
   m_TagString: Player
@@ -85,27 +85,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!50 &1799740727996185261
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3518153362536104527}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 7
-  m_Material: {fileID: 6200000, guid: 2c2e6ecf0b2e25a4f95bdacb9deffd8c, type: 2}
-  m_Interpolate: 2
-  m_SleepingMode: 1
-  m_CollisionDetection: 1
-  m_Constraints: 0
 --- !u!114 &2126663541138533046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,9 +97,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c7e032dd54a9574db11195c086c45a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Health: 3
-  Shield: 0
-  IsDebug: 0
 --- !u!58 &720089948
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -137,3 +113,24 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!50 &2291205353192454165
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3518153362536104527}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

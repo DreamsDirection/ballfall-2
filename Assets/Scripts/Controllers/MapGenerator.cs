@@ -44,17 +44,22 @@ public class MapGenerator : MonoBehaviour
 
     public void NewGame()
     {
+        Clear();
         Vector2 startPos = new Vector2(0,-5);
         var offset = DistanceBetweenPlatforms;
-        foreach (var line in LastLines)
-        {
-            Destroy(line);
-        }
-        LastLines.Clear();
         for (int i = 0; i < 3; i++)
         {
             Spawn(startPos);
             startPos.y -= offset;
         }
+    }
+
+    public void Clear()
+    {
+        foreach (var line in LastLines)
+        {
+            Destroy(line);
+        }
+        LastLines.Clear();
     }
 }

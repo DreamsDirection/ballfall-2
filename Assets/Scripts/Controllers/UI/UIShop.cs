@@ -1,26 +1,29 @@
 ﻿
 using System.Collections.Generic;
-using BallFall.UI;
+using Controllers.UI;
+using Items;
 using Items.Controller;
 using Items.Models;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace BallFall.Controllers.UI
+namespace Controllers.UI
 {
-    public class ShopUI : MonoBehaviour
+    public class UIShop : MonoBehaviour
     {
-        GameController GC => GameController.GC;
-        
-        
-        public ItemsHolder holder;
         public GameObject ShopCell;
         public GameObject ShopGrid;
-        private List<GameObject> L_Cells = new List<GameObject>();
+
+
+        private List<Cell> L_Cells = new List<Cell>();
+        GameController GC => GameController.GC;
+        private ItemsHolder holder = new ItemsHolder();
 
         private void Start()
         {
+            SOItem[] items = Resources.FindObjectsOfTypeAll<SOItem>(); 
+            holder.Init(items);
             ClearCells();
             SetupCells();
         }
@@ -30,7 +33,7 @@ namespace BallFall.Controllers.UI
             
         }
 
-        public void SetupCells()
+        void SetupCells()
         {
             int count = holder.ItemsCount;
             for (int i = 0; i < count; i++)
@@ -42,35 +45,33 @@ namespace BallFall.Controllers.UI
                 // Не пытаться поменять ButtonClick(id) на ButtonClick(i)
                 //Это приведёт к одному и тому же числу во всех кнопках
                 var id = i;
-                cell.Button.onClick.AddListener(() => {ButtonClick(id);} );
+                cell.Init(item.image,item.Price.ToString(),() => {ButtonClick(id);});
                 //
-                
-                cell.img.sprite = item.image;
-                cell.txt.text = item.Price.ToString();
-                
-                L_Cells.Add(goCell);
+                cell.name = "Cell_" + id;
+                L_Cells.Add(cell);
             }
         }
 
 
-        public void ButtonClick(int id)
+        void ButtonClick(int id)
         {
             Item item = holder.GetItem(id);
             Cell cell = L_Cells[id].GetComponent<Cell>();
 
             if (item.IsBuy)
             {
-                cell.Button.interactable = false;
+                Debug.Log("Select-" + id);
                 for (int i = 0; i < L_Cells.Count; i++)
-                    L_Cells[i].GetComponent<Cell>().Button.interactable = true;
-                GC.Ball.GetComponent<Image>().sprite = item.image;
+                    L_Cells[i].UnSelect();
+                cell.Select();
+                GC.Ball.GetComponent<SpriteRenderer>().sprite = item.image;
             }
             else
             {
+                Debug.Log("Buy- " + id);
                 if (GC.Score >= item.Price)
                 {
-                    cell.txt.text = "";
-                    cell.imgBlock.enabled = false;
+                    cell.Buy();
                     item.IsBuy = true;
                     GC.Score -= item.Price;
                 }
@@ -86,6 +87,11 @@ namespace BallFall.Controllers.UI
                 if (holder.GetItem(i).Price <= money) return true;
 
             return false;
+        }
+
+        public void Return()
+        {
+            UIController.UI.ShowUI<UIMainMenu>();
         }
     }
 }

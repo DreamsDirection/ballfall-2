@@ -1,31 +1,39 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using BallFall.Controllers.UI;
+using Controllers.InputControllers;
+using Controllers.UI;
+using Items.Controller;
 using UnityEngine;
 
-namespace BallFall.Controllers
+namespace Controllers
 {
 
 
 
     public class GameController : MonoBehaviour
     {
+        
+        public float GameScore = 0;
+        public float Score = 0;
+        public float BestScore;
+
+
+        public GameObject inputController;
+        
+        
         public float BallSpeed;
         public float BallGravity;
         public float CameraStartSpeed;
         public float CameraSpeedMultiplier;
         public float CameraMaxSpeed;
         public static GameController GC;
-        public float GameScore = 0;
-        public float Score = 0;
-        public float BestScore;
 
-        public GameUI UI;
         public MapGenerator Generator;
-        public GameObject Ball;
+        public PlayerController Ball;
         public CameraController Camera;
-        public ControllType controllType = ControllType.LeftRight;
+        public ControllType controllType = ControllType.Touch;
+        public GameState GameState = GameState.Menu;
 
         private void Awake()
         {
@@ -37,6 +45,7 @@ namespace BallFall.Controllers
         void Start()
         {
             Load();
+            UIController.UI.ShowUI<UIMainMenu>();
         }
 
         // Update is called once per frame
@@ -47,56 +56,36 @@ namespace BallFall.Controllers
 
         public void StartGame()
         {
-            UI.HideMainMenu();
+            GameState = GameState.Play;
             Generator.NewGame();
-            Ball.transform.position = Vector2.zero;
-            Ball.SetActive(true);
-            Camera.transform.position = new Vector3(0, 0, -10);
-            Camera.Move = true;
-            UI.HideGameOverPanel();
-            UI.ShowGamePanel();
-
-
-            Ball.GetComponent<PlayerController>().Init();
             Camera.Init();
+            Ball.gameObject.SetActive(true);
+            Ball.GetComponent<PlayerController>().Init();
             Save();
         }
 
         public void GameOver()
         {
+            GameState = GameState.Menu;
             Score += GameScore;
-            Ball.transform.position = Vector2.zero;
-            Ball.SetActive(false);
-            UI.ShowGameOverPanel();
-            Camera.Move = false;
-            UI.HideGamePanel();
+            Ball.gameObject.SetActive(false);
             Save();
         }
 
-        public void EndGame()
+        public void Return()
         {
-            UI.ShowMainMenu();
-            UI.HideGameOverPanel();
-            UI.HideGamePanel();
-            Ball.SetActive(false);
-            Camera.Move = false;
-            Save();
+            Generator.Clear();
         }
 
-        public void SetAccelerometerControll()
+        public void Continue()
         {
-            controllType = ControllType.Accelerometer;
+            GameState = GameState.Play;
+            Ball.gameObject.SetActive(true);
         }
 
-        public void SetTouchControll()
-        {
-            controllType = ControllType.Touch;
-        }
+        
 
-        public void SetLeftRightControll()
-        {
-            controllType = ControllType.LeftRight;
-        }
+        
 
         void Save()
         {
@@ -114,8 +103,14 @@ namespace BallFall.Controllers
 
     public enum ControllType
     {
-        LeftRight,
-        Accelerometer,
-        Touch
+        Touch = 0,
+        Accelerometer = 1,
+        Drag = 2
+    }
+
+    public enum GameState
+    {
+        Play,
+        Menu
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Controllers.UI
 {
-    public class UIGame : MonoBehaviour
+    public class UIGame : UIBase
     {
         public List<Image> hearths = new List<Image>();
         public Text ScoreText;
@@ -21,18 +21,53 @@ namespace Controllers.UI
         private void Update()
         {
             string txt;
-            float dis = (Mathf.Round(Vector2.Distance(player.transform.position, Vector2.zero)));
+            float dis = (Mathf.Round(Vector2.Distance(player.transform.position, Vector2.zero))) / 10;
             txt = dis.ToString();
             ScoreText.text = txt;
+            GC.GameScore = dis;
+        }
+
+        public override void Open()
+        {
+            
+            
+        }
+
+        public override void Close()
+        {
+            
         }
 
         public void ChangeHealth()
         {
             int count = player.ball.Health;
-            for (int i = 3; i > 0; i--)
+            switch (count)
             {
-                if (i <= count) hearths[i].enabled = true;
-                else hearths[i].enabled = false;
+                case 1:
+                {
+                    hearths[0].enabled = true;
+                    hearths[1].enabled = false;
+                    hearths[2].enabled = false;
+                 break;   
+                }
+                case 2:
+                {
+                    hearths[0].enabled = true;
+                    hearths[1].enabled = true;
+                    hearths[2].enabled = false;
+                    break;
+                }
+                case 3:
+                {
+                    hearths[0].enabled = true;
+                    hearths[1].enabled = true;
+                    hearths[2].enabled = true;
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
             }
         }
 
@@ -52,6 +87,7 @@ namespace Controllers.UI
         public void EndGame()
         {
             UnPauseGame();
+            GameController.GC.Death();
             UIController.UI.ShowUI<UIMainMenu>();
         }
     }

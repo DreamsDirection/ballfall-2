@@ -2,24 +2,37 @@
 
 namespace Controllers.UI
 {
-    public class UIMainMenu : MonoBehaviour
+    public class UIMainMenu : UIBase
     {
-        private UIController ui => UIController.UI;
-        GameController gc => GameController.GC;
+        
+        
+        
+        
+        public override void Open()
+        {
+            
+        }
+
+        public override void Close()
+        {
+            
+        }
+        
+        
         public void Play()
         {
-            gc.StartGame();
-            ui.ShowUI<UIGame>();
+            GC.StartGame();
+            UI.ShowUI<UIGame>();
         }
 
         public void Settings()
         {
-            ui.ShowUI<UISettings>();
+            UI.ShowUI<UISettings>();
         }
 
         public void Shop()
         {
-            ui.ShowUI<UIShop>();
+            UI.ShowUI<UIShop>();
         }
 
         public void Info()

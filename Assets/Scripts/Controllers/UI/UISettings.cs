@@ -5,14 +5,23 @@ using UnityEngine;
 
 namespace Controllers.UI
 {
-    public class UISettings : MonoBehaviour
+    public class UISettings : UIBase
     {
-        GameController gc => GameController.GC;
 
         public GameObject SoundSlider;
         private void Start()
         {
             SetControlType<InputControllerTouch>();
+        }
+        
+        public override void Open()
+        {
+            
+        }
+
+        public override void Close()
+        {
+            
         }
 
         public void SoundMute(bool value)
@@ -35,19 +44,19 @@ namespace Controllers.UI
             {
                 case 0:
                 {   
-                    gc.controllType = ControllType.Touch;
+                    GC.controllType = ControllType.Touch;
                     SetControlType<InputControllerTouch>();
                     break;
                 }
                 case 1:
                 {
-                    gc.controllType = ControllType.Accelerometer;
+                    GC.controllType = ControllType.Accelerometer;
                     SetControlType<InputControllerAccelerometer>();
                     break;
                 }
                 case 2:
                 {
-                    gc.controllType = ControllType.Drag;
+                    GC.controllType = ControllType.Drag;
                     SetControlType<InputControllerDrag>();
                     break;
                 }
@@ -57,8 +66,8 @@ namespace Controllers.UI
 
         void SetControlType<T>() where T : InputControllerBase
         {
-            Destroy(gc.inputController.GetComponent<InputControllerBase>());
-            gc.inputController.AddComponent<T>();
+            Destroy(GC.inputController.GetComponent<InputControllerBase>());
+            GC.inputController.AddComponent<T>();
         }
     }
 }

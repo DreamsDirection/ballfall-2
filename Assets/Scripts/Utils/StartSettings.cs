@@ -20,8 +20,6 @@ public class StartSettings : MonoBehaviour
     private void Start()
     {
         Load();
-        Setup();
-        gameObject.SetActive(false);
     }
 
     public void Setup()

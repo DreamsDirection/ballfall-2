@@ -11,15 +11,15 @@ using UnityEngine.UI;
 
 namespace Controllers.UI
 {
-    public class UIShop : MonoBehaviour
+    public class UIShop : UIBase
     {
         public GameObject ShopCell;
         public GameObject ShopGrid;
+        public Text TextScore;
         public SOHolder soHolder;
 
 
         private List<Cell> L_Cells = new List<Cell>();
-        GameController GC => GameController.GC;
         private ItemsHolder holder = new ItemsHolder();
 
         private void Start()
@@ -27,6 +27,16 @@ namespace Controllers.UI
             holder.Init(soHolder.Items);
             ClearCells();
             SetupCells();
+        }
+        
+        public override void Open()
+        {
+            TextScore.text = GC.Score.ToString();
+        }
+
+        public override void Close()
+        {
+            
         }
 
 
@@ -78,6 +88,7 @@ namespace Controllers.UI
                     GC.Score -= item.Price;
                 }
             }
+            TextScore.text = GC.Score.ToString();
 
         }
 
@@ -85,8 +96,12 @@ namespace Controllers.UI
         {
             int count = holder.ItemsCount;
             float money = GC.Score;
+            float bonus = GC.GameScore;
             for (int i = 0; i < count; i++)
-                if (holder.GetItem(i).Price <= money) return true;
+            {
+                Item item = holder.GetItem(i);
+                if (item.Price <= money + bonus && !item.IsBuy) return true;
+            }
 
             return false;
         }

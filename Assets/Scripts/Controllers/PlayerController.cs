@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Controllers;
+using Controllers.InputControllers;
 using Controllers.UI;
 using Items.Models;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,11 +20,28 @@ namespace Controllers
 
         GameController GC => GameController.GC;
         private UIGame _uiGame;
+        private GameState state => GC.GameState;
+
+        public float score;
 
 
         private float _timer;
 
         void Start()
+        {
+            Init();
+            if (!_uiGame) _uiGame = UIController.UI.GetUI<UIGame>();
+        }
+
+        private void Update()
+        {
+            if (state == GameState.Play)
+            {
+                _timer -= Time.deltaTime;
+            }
+        }
+
+        public void Init()
         {
             ball = new Ball()
             {
@@ -33,38 +52,20 @@ namespace Controllers
                 Shield = false,
                 Speed = GC.BallSpeed
             };
-            _uiGame = UIController.UI.GetUI<UIGame>();
-            Init();
-        }
-
-        private void Update()
-        {
-            _timer -= Time.deltaTime;
-        }
-
-        public void Init()
-        {
-            ball ??= new Ball()
-            {
-                AttackInterval = 1,
-                BallGravity = GC.BallGravity,
-                Health = 3,
-                IsDebug = false,
-                Shield = false,
-                Speed = GC.BallSpeed
-            };
-            
+            if (!_uiGame) _uiGame = UIController.UI.GetUI<UIGame>();
             _rigidbody2D = TryGetComponent(out Rigidbody2D rb) ? rb : gameObject.AddComponent<Rigidbody2D>();
             if (TryGetComponent(out SpriteRenderer render)) _spriteRenderer = render;
             _rigidbody2D.gravityScale = ball.BallGravity;
             transform.position = Vector2.zero;
+            
         }
 
         public void Move(Vector2 direct)
         {
+            Debug.Log("Move");
             var dir = direct * ball.Speed;
             dir.y = _rigidbody2D.velocity.y;
-            _rigidbody2D.velocity = Vector2.Lerp(_rigidbody2D.velocity, direct, 0.2f);
+            _rigidbody2D.velocity = Vector2.Lerp(_rigidbody2D.velocity, dir, 0.25f);
         }
 
 
@@ -75,9 +76,7 @@ namespace Controllers
                 ball.Health--;
                 if (ball.Health <= 0)
                 {
-                    GC.GameOver();
-                    UIController.UI.GetUI<UIGameOver>().Show();
-                    UIController.UI.ShowUI<UIGameOver>();
+                    GC.Death();
                 }
                 else
                 {
@@ -104,9 +103,7 @@ namespace Controllers
             {
                 case "Spike":
                 {
-                    UIController.UI.ShowUI<UIGameOver>();
-                    UIController.UI.GetUI<UIGameOver>().Show();
-                    UIController.UI.ShowUI<UIGameOver>();
+                    GC.Death();
                     break;
                 }
                 case "Spike_2":
@@ -135,7 +132,7 @@ namespace Controllers
                 case "Hearth":
                 {
                     ball.Health++;
-                    UIController.UI.ShowUI<UIGameOver>();
+                    _uiGame.ChangeHealth();
                     Destroy(other.gameObject);
                     if (ball.Health >= 3) ball.Health = 3;
                     break;

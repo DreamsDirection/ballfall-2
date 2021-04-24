@@ -18,7 +18,7 @@ public class MapGenerator : MonoBehaviour
 
     void Update()
     {
-        if (LastLines.Count > 0 && state == GameState.Play)
+        if (LastLines.Count > 0)
         {
             float dis = Vector2.Distance(transform.position, LastLines[LastLines.Count - 1].transform.position);
             if (dis > DistanceBetweenPlatforms)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using Controllers.InputControllers;
 using Controllers.UI;
 using Items.Controller;
@@ -20,6 +21,7 @@ namespace Controllers
 
 
         public GameObject inputController;
+        UIController UI => UIController.UI;
         
         
         public float BallSpeed;
@@ -31,6 +33,7 @@ namespace Controllers
 
         public MapGenerator Generator;
         public PlayerController Ball;
+        public Rigidbody2D BallBody => Ball.GetComponent<Rigidbody2D>();
         public CameraController Camera;
         public ControllType controllType = ControllType.Touch;
         public GameState GameState = GameState.Menu;
@@ -60,33 +63,44 @@ namespace Controllers
             GameState = GameState.Play;
             Generator.NewGame();
             Camera.Init();
-            Ball.gameObject.SetActive(true);
-            Ball.GetComponent<PlayerController>().Init();
+            BallBody.simulated = true;
+            Ball.Init();
+            Save();
+            UI.ShowUI<UIGame>();
+        }
+
+
+        public void Death()
+        {
+            GameState = GameState.Pause;
+            BallBody.simulated = false;
+            UI.ShowUI<UIGameOver>();
             Save();
         }
 
         public void GameOver()
         {
-            GameState = GameState.Menu;
-            Score += GameScore;
-            Ball.gameObject.SetActive(false);
-            Save();
-        }
-
-        public void Return()
-        {
             Generator.Clear();
+            GameState = GameState.Menu;
+            Camera.Init();
+            Ball.Init();
+            BallBody.simulated = false;
+            UI.ShowUI<UIMainMenu>();
+            Score += GameScore;
         }
 
-        public void Continue()
+        public void PauseGame()
+        {
+            GameState = GameState.Pause;
+            BallBody.simulated = false;
+        }
+        public void ResumeGame()
         {
             GameState = GameState.Play;
-            Ball.gameObject.SetActive(true);
+            BallBody.simulated = true;
         }
 
-        
 
-        
 
         void Save()
         {
@@ -112,6 +126,7 @@ namespace Controllers
     public enum GameState
     {
         Play,
+        Pause,
         Menu
     }
 }

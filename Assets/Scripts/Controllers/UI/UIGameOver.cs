@@ -9,16 +9,14 @@ namespace Controllers.UI
 {
 
 
-    public class UIGameOver : MonoBehaviour
+    public class UIGameOver : UIBase
     {
         public GameObject NewBallPanel;
         public Text Text;
-        GameController GC => GameController.GC;
-        private UIController UI => UIController.UI;
 
-        public void Show()
+        public override void Open()
         {
-            UIShop shop = UI.GetUI<UIShop>() as UIShop;
+            UIShop shop = UI.GetUI<UIShop>();
             if (shop.CanBuy())
                 NewBallPanel.SetActive(true);
             else
@@ -27,20 +25,31 @@ namespace Controllers.UI
             Text.text = "Счет: " + GC.GameScore.ToString();
         }
 
+        public override void Close()
+        {
+            
+        }
+        public void Show()
+        {
+            
+        }
+
         public void ShowShop()
         {
+            GC.GameOver();
             UI.ShowUI<UIShop>();
         }
 
         public void Return()
         {
-            UIController.UI.ShowUI<UIMainMenu>();
+            GC.GameOver();
+            UI.ShowUI<UIMainMenu>();
         }
 
         public void Restart()
         {
-            UIController.UI.ShowUI<UIGame>();
-            GameController.GC.StartGame();
+            GC.GameOver();
+            GC.StartGame();
         }
 
         public void ContinueAD()

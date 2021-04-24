@@ -16,7 +16,7 @@ namespace Controllers.UI
         [SerializeField]private UIShop shopUI;
         [SerializeField]private UIGameOver gameOverUI;
         [SerializeField]private UIMainMenu mainMenuUI;
-        private HashSet<MonoBehaviour> l_ui = new HashSet<MonoBehaviour>();
+        private HashSet<UIBase> l_ui = new HashSet<UIBase>();
 
         private void Awake()
         {
@@ -36,18 +36,34 @@ namespace Controllers.UI
             l_ui.Add(shopUI);
             l_ui.Add(gameOverUI);
             l_ui.Add(mainMenuUI);
+
+            foreach (var uiBase in l_ui)
+            {
+                uiBase.gameObject.SetActive(true);
+                uiBase.gameObject.SetActive(false);
+            }
+
             ShowUI<UIMainMenu>();
+
         }
-        public void ShowUI<T>() where T : MonoBehaviour
+        public void ShowUI<T>() where T : UIBase
         {
             foreach (var ui in l_ui)
             {
-                if(ui is T) ui.gameObject.SetActive(true);
-                else ui.gameObject.SetActive(false);
+                if (ui is T)
+                {
+                    ui.gameObject.SetActive(true);
+                    ui.Open();
+                }
+                else
+                {
+                    ui.Close();
+                    ui.gameObject.SetActive(false);
+                }
             }
         }
 
-        public T GetUI<T>() where T : MonoBehaviour
+        public T GetUI<T>() where T : UIBase
         {
             try
             {

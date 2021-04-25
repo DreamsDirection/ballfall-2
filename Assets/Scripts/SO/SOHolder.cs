@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Items
@@ -6,6 +7,16 @@ namespace Items
     [CreateAssetMenu(fileName = "Holder", menuName = "SO/Holder", order = 0)]
     public class SOHolder : ScriptableObject
     {
-        public SOItem[] Items;
+        public List<SOItem> items = new List<SOItem>();
+
+        private void OnValidate()
+        {
+            int id = 0;
+            foreach (var item in items)
+            {
+                item.ID = id;
+                id++;
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Controllers;
 using Items;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
@@ -8,37 +9,76 @@ using UnityEditor;
 
 namespace Items.Controller
 {
+    [Serializable]
     public class ItemsHolder
     {
-        private SOItem[] items;
         // <Уникальный номер, экземпляр класса>
-        private Dictionary<int, Item> Items = new Dictionary<int, Item>();
+        public Dictionary<int, Item> Items = new Dictionary<int, Item>();
+        private SOHolder _holder;
         public int ItemsCount => Items.Count;
 
-        public void Init(SOItem[] list)
+        public void Init()
         {
-            Debug.Log("Init");
-            items = list;
-            
-            for (int i = 0; i< items.Length; i++)
+            foreach (var item in _holder.items)
             {
-                Debug.Log(items[i].name);
-                Item item = new Item(items[i], i);
-                Items.Add(i,item);
+                Item i = new Item() {ID = item.ID, IsBuy = false};
+                Items.Add(item.ID,i);
             }
         }
 
-        public Item GetItem(int id)
+
+        public SOItem GetItem(int id)
         {
             try
             {
-                Item item = Items[id];
-                return item;
+                foreach (var item in _holder.items)
+                {
+                    if (item.ID == id) return item;
+                }
+
+                return null;
             }
             catch (Exception e)
             {
                 return null;
             }
+        }
+
+        
+        public void Save()
+        {
+            PersistentCache.Save(Items);
+            GameController.GC.Save();
+        }
+
+        void Load()
+        {
+            Dictionary<int, Item> _items = PersistentCache.TryLoad<Dictionary<int, Item>>();
+            if(_items == null) return;
+            foreach (var item in _items)
+            {
+                try
+                {
+                    Items[item.Key].IsBuy = item.Value.IsBuy;
+                    Items[item.Key].IsSelected = item.Value.IsSelected;
+                }
+                catch (KeyNotFoundException)
+                {
+                    Item _item = new Item() {ID = item.Key, IsBuy = item.Value.IsBuy,IsSelected = item.Value.IsSelected};
+                    Items.Add(item.Key,_item);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning(ex);
+                }
+            }
+        }
+        public ItemsHolder(SOHolder soHolder)
+        {
+            _holder = soHolder;
+            Init();
+            Load();
+            Save();
         }
     }
 }

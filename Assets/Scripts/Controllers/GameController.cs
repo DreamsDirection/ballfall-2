@@ -87,22 +87,25 @@ namespace Controllers
             BallBody.simulated = false;
             UI.ShowUI<UIMainMenu>();
             Score += GameScore;
+            Save();
         }
 
         public void PauseGame()
         {
             GameState = GameState.Pause;
             BallBody.simulated = false;
+            Save();
         }
         public void ResumeGame()
         {
             GameState = GameState.Play;
             BallBody.simulated = true;
+            Save();
         }
 
 
 
-        void Save()
+        public void Save()
         {
             PlayerPrefs.SetFloat("bestScore", BestScore);
             PlayerPrefs.SetFloat("score", Score);

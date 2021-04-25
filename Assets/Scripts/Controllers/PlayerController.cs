@@ -88,6 +88,7 @@ namespace Controllers
             {
                 ball.Shield = false;
                 _spriteRenderer.color = Color.white;
+                _timer = ball.AttackInterval;
             }
             else
             {

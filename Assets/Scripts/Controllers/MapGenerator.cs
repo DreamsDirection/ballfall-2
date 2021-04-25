@@ -6,6 +6,7 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour
 {
     public List<GameObject> Lines = new List<GameObject>();
+    public List<GameObject> StartLines = new List<GameObject>();
 
     public float DistanceBetweenPlatforms;
 
@@ -47,11 +48,12 @@ public class MapGenerator : MonoBehaviour
     public void NewGame()
     {
         Clear();
-        Vector2 startPos = new Vector2(0,-5);
+        Vector2 startPos = new Vector2(0,-2);
         var offset = DistanceBetweenPlatforms;
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < StartLines.Count; i++)
         {
-            Spawn(startPos);
+            var obj = StartLines[i];
+            LastLines.Add(Instantiate(obj, startPos, Quaternion.identity));
             startPos.y -= offset;
         }
     }

@@ -10,6 +10,7 @@ namespace Controllers.UI
         public List<Image> hearths = new List<Image>();
         public Text ScoreText;
         public GameObject pausePanel;
+        public List<GameObject> Hide = new List<GameObject>();
 
 
         private PlayerController player => GameController.GC.Ball;
@@ -29,7 +30,6 @@ namespace Controllers.UI
 
         public override void Open()
         {
-            
             
         }
 

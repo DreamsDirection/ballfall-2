@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Controllers.UI;
@@ -20,11 +21,11 @@ namespace Controllers.UI
 
 
         private List<Cell> L_Cells = new List<Cell>();
-        private ItemsHolder holder = new ItemsHolder();
+        private ItemsHolder holder;
 
         private void Start()
         {
-            holder.Init(soHolder.Items);
+            holder = new ItemsHolder(soHolder);
             ClearCells();
             SetupCells();
         }
@@ -48,67 +49,118 @@ namespace Controllers.UI
         void SetupCells()
         {
             int count = holder.ItemsCount;
+            bool SelectedFind = false;
             for (int i = 0; i < count; i++)
             {
                 GameObject goCell = Instantiate(ShopCell, ShopGrid.transform);
-                Item item = holder.GetItem(i);
+                SOItem item = holder.GetItem(i);
                 Cell cell = goCell.GetComponent<Cell>();
-                
+
                 // Не пытаться поменять ButtonClick(id) на ButtonClick(i)
                 //Это приведёт к одному и тому же числу во всех кнопках
                 var id = i;
-                cell.Init(item.image,item.Price.ToString(),() => {ButtonClick(id);});
+                cell.Init(item.Image, item.Price.ToString(), () => { ButtonClick(id); });
                 //
                 cell.name = "Cell_" + id;
+
                 L_Cells.Add(cell);
+
+                Item it = holder.Items[id];
+                if (it.IsBuy) cell.Buy();
+                if (it.IsSelected)
+                {
+                    Select(id);
+                    SelectedFind = true;
+                }
+            }
+
+            L_Cells[0].Buy();
+            if (!SelectedFind)
+            {
+                Buy(0);
+                Select(0);
             }
         }
 
 
         void ButtonClick(int id)
         {
-            Item item = holder.GetItem(id);
+            Item item = holder.Items[id];
+            SOItem SOItem = holder.GetItem(id);
             Cell cell = L_Cells[id].GetComponent<Cell>();
 
             if (item.IsBuy)
             {
-                Debug.Log("Select-" + id);
-                for (int i = 0; i < L_Cells.Count; i++)
-                    L_Cells[i].UnSelect();
-                cell.Select();
-                GC.Ball.GetComponent<SpriteRenderer>().sprite = item.image;
+                Select(id);
             }
             else
             {
-                Debug.Log("Buy- " + id);
-                if (GC.Score >= item.Price)
-                {
-                    cell.Buy();
-                    item.IsBuy = true;
-                    GC.Score -= item.Price;
-                }
+                Buy(id);
             }
-            TextScore.text = GC.Score.ToString();
 
+            TextScore.text = GC.Score.ToString();
+            holder.Save();
+        }
+
+        void Select(int id)
+        {
+            Item item = holder.Items[id];
+            SOItem SOItem = holder.GetItem(id);
+            Cell cell = L_Cells[id].GetComponent<Cell>();
+            
+            Debug.Log("Select-" + id);
+            for (int i = 0; i < L_Cells.Count; i++)
+            {
+                L_Cells[i].UnSelect();
+                holder.Items[i].IsSelected = false;
+            }
+            cell.Select();
+            item.IsSelected = true;
+            GC.Ball.GetComponent<SpriteRenderer>().sprite = SOItem.Image;
+            holder.Save();
+        }
+
+        void Buy(int id)
+        {
+            Item item = holder.Items[id];
+            SOItem SOItem = holder.GetItem(id);
+            Cell cell = L_Cells[id].GetComponent<Cell>();
+            
+            Debug.Log("Buy- " + id);
+            if (GC.Score >= SOItem.Price)
+            {
+                cell.Buy();
+                item.IsBuy = true;
+                GC.Score -= SOItem.Price;
+            }
         }
 
         public bool CanBuy()
         {
-            int count = holder.ItemsCount;
-            float money = GC.Score;
-            float bonus = GC.GameScore;
-            for (int i = 0; i < count; i++)
+            try
             {
-                Item item = holder.GetItem(i);
-                if (item.Price <= money + bonus && !item.IsBuy) return true;
+                int count = holder.ItemsCount;
+                float money = GC.Score;
+                float bonus = GC.GameScore;
+                for (int i = 0; i < count; i++)
+                {
+                    SOItem item = holder.GetItem(i);
+                    Item _item = holder.Items[i];
+                    if (item.Price <= money + bonus && !_item.IsBuy) return true;
+                }
+                return false;
             }
-
-            return false;
+            catch (Exception e)
+            {
+                Debug.LogWarning(e);
+                return false;
+            }
         }
 
         public void Return()
         {
             UIController.UI.ShowUI<UIMainMenu>();
+            holder.Save();
         }
     }
 }

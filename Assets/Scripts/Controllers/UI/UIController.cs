@@ -31,16 +31,18 @@ namespace Controllers.UI
 
         void Init()
         {
-            l_ui.Add(gameUI);
-            l_ui.Add(settingsUI);
-            l_ui.Add(shopUI);
             l_ui.Add(gameOverUI);
             l_ui.Add(mainMenuUI);
+            l_ui.Add(shopUI);
+            l_ui.Add(gameUI);
+            l_ui.Add(settingsUI);
 
             foreach (var uiBase in l_ui)
             {
                 uiBase.gameObject.SetActive(true);
+                uiBase.Open();
                 uiBase.gameObject.SetActive(false);
+                uiBase.Close();
             }
 
             ShowUI<UIMainMenu>();

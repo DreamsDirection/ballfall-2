@@ -1,12 +1,15 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace Controllers.UI
 {
     public class UIMainMenu : UIBase
     {
-        
-        
-        
+
+
+        public Button PlayButton;
+        public Text PlayButtonText;
         
         public override void Open()
         {
@@ -18,12 +21,6 @@ namespace Controllers.UI
             
         }
         
-        
-        public void Play()
-        {
-            GC.StartGame();
-            UI.ShowUI<UIGame>();
-        }
 
         public void Settings()
         {
@@ -41,6 +38,32 @@ namespace Controllers.UI
 
         public void Exit()
         {
+            
+        }
+
+        private void OnEnable()
+        {
+            try
+            {
+                if (GC.Data.InGame)
+                {
+                    PlayButtonText.text = "Продолжить";
+                    PlayButton.onClick.RemoveAllListeners();
+                    PlayButton.onClick.AddListener(()=> GC.ContinueGame());
+                }
+                else
+                {
+                    PlayButtonText.text = "Новая игра";
+                    PlayButton.onClick.RemoveAllListeners();
+                    PlayButton.onClick.AddListener(()=> GC.StartGame());
+                }
+            }
+            catch (Exception e)
+            {
+                PlayButtonText.text = "Новая игра";
+                PlayButton.onClick.RemoveAllListeners();
+                PlayButton.onClick.AddListener(()=> GC.StartGame());
+            }
             
         }
     }

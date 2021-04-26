@@ -24,13 +24,13 @@ namespace Controllers
             Init();
         }
 
-        public void Init()
+        public void Init(float PositionY = 0)
         {
             StopAllCoroutines();
             Speed = GC.CameraStartSpeed;
             SpeedMultiplier = GC.CameraSpeedMultiplier;
             StartCoroutine(SpeedUp());
-            transform.position = new Vector3(0, 0, -10);
+            transform.position = new Vector3(0, PositionY, -10);
         }
 
         // Update is called once per frame

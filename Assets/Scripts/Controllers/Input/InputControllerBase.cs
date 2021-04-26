@@ -6,6 +6,7 @@ namespace Controllers.InputControllers
 {
     public class InputControllerBase : MonoBehaviour
     {
+        public int InputType = 0;
         protected Touch _touch;
         protected PlayerController ball => GameController.GC.Ball;
         private GameState state => GameController.GC.GameState;

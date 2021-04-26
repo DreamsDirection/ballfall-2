@@ -25,7 +25,7 @@ namespace Controllers.UI
             float dis = (Mathf.Round(Vector2.Distance(player.transform.position, Vector2.zero))) / 10;
             txt = dis.ToString();
             ScoreText.text = txt;
-            GC.GameScore = dis;
+            GC.Data.GameScore = dis;
         }
 
         public override void Open()
@@ -74,6 +74,7 @@ namespace Controllers.UI
         public void PauseGame()
         {
             pausePanel.SetActive(true);
+            GC.Save();
             Time.timeScale = 0;
         }
 
@@ -87,7 +88,7 @@ namespace Controllers.UI
         public void EndGame()
         {
             UnPauseGame();
-            GameController.GC.Death();
+            GameController.GC.GameOver();
             UIController.UI.ShowUI<UIMainMenu>();
         }
     }

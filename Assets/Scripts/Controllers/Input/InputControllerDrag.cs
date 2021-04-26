@@ -11,6 +11,7 @@ namespace Controllers.InputControllers
         private void Start()
         {
             cam = Camera.main;
+            InputType = 2;
         }
 
         protected override void InputUpdate()

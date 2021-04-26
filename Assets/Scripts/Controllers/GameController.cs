@@ -1,11 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using Controllers.InputControllers;
 using Controllers.UI;
 using Items.Controller;
+using Items.Models;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Controllers
 {
@@ -14,14 +17,10 @@ namespace Controllers
 
     public class GameController : MonoBehaviour
     {
-        
-        public float GameScore = 0;
-        public float Score = 0;
-        public float BestScore;
-
-
         public GameObject inputController;
+        private Dictionary<int,InputControllerBase> InputTypes = new Dictionary<int, InputControllerBase>();
         UIController UI => UIController.UI;
+        public GameData Data;
         
         
         public float BallSpeed;
@@ -35,7 +34,6 @@ namespace Controllers
         public PlayerController Ball;
         public Rigidbody2D BallBody => Ball.GetComponent<Rigidbody2D>();
         public CameraController Camera;
-        public ControllType controllType = ControllType.Touch;
         public GameState GameState = GameState.Menu;
 
         private void Awake()
@@ -47,24 +45,48 @@ namespace Controllers
         // Start is called before the first frame update
         void Start()
         {
-            GameState = GameState.Menu;
+            InputTypes.Add(1,new InputControllerTouch());
+            InputTypes.Add(2,new InputControllerAccelerometer());
+            InputTypes.Add(3,new InputControllerDrag());
+            
+            
             Load();
+            GameState = GameState.Menu;
             UIController.UI.ShowUI<UIMainMenu>();
         }
 
         // Update is called once per frame
-        void FixedUpdate()
+        void Update()
         {
-
+            if (Input.GetKeyDown(KeyCode.Return)
+                | Input.GetKeyDown(KeyCode.Home)
+                | Input.GetKeyDown(KeyCode.Menu)
+                | Input.GetKeyDown(KeyCode.Escape))
+                Save();
         }
 
         public void StartGame()
         {
             GameState = GameState.Play;
+            Data.InGame = true;
             Generator.NewGame();
             Camera.Init();
             BallBody.simulated = true;
             Ball.Init();
+            Save();
+            UI.ShowUI<UIGame>();
+        }
+        public void ContinueGame()
+        {
+            Debug.LogWarning("PlayerY- " + Data.BallPositionY + "\nPlayerX- " + Data.BallPositionX);            
+            
+            
+            GameState = GameState.Play;
+            BallBody.simulated = true;
+            Ball.Init(Data.BallPositionY,Data.BallPositionX);
+            Data.InGame = true;
+            Camera.Init(Data.CameraPositionY);
+            Generator.ContinueGame(Data);
             Save();
             UI.ShowUI<UIGame>();
         }
@@ -86,12 +108,14 @@ namespace Controllers
         public void GameOver()
         {
             Generator.Clear();
+            Data.InGame = false;
             GameState = GameState.Menu;
             Camera.Init();
             Ball.Init();
             BallBody.simulated = false;
             UI.ShowUI<UIMainMenu>();
-            Score += GameScore;
+            Data.Money += Data.GameScore;
+            if (Data.GameScore > Data.BestScore) Data.BestScore = Data.GameScore;
             Save();
         }
 
@@ -112,14 +136,48 @@ namespace Controllers
 
         public void Save()
         {
-            PlayerPrefs.SetFloat("bestScore", BestScore);
-            PlayerPrefs.SetFloat("score", Score);
+            Data.BallPositionX = Ball.transform.position.x;
+            Data.BallPositionY = Ball.transform.position.y;
+            Data.CameraPositionY = Camera.transform.position.y;
+            Data.InputType = inputController.GetComponent<InputControllerBase>().InputType;
+            
+            PersistentCache.Save(Data);
+            Debug.Log("Saved");
         }
 
         void Load()
         {
-            if (PlayerPrefs.HasKey("score")) Score = PlayerPrefs.GetFloat("score");
-            if (PlayerPrefs.HasKey("bestScore")) BestScore = PlayerPrefs.GetFloat("bestScore");
+            Data = PersistentCache.TryLoad<GameData>();
+            if (Data == null)
+            {
+                Debug.Log("Data load unsuccessful");
+                Data = new GameData();
+            }
+            SetControll(Data.InputType);
+        }
+
+        public void SetControll(int id)
+        {
+            Destroy(inputController.GetComponent<InputControllerBase>());
+            switch (id)
+            {
+                case 0:
+                {
+                    inputController.AddComponent<InputControllerTouch>();
+                    break;
+                }
+                case 1:
+                {
+                    inputController.AddComponent<InputControllerAccelerometer>();
+                    break;
+                }
+                case 2:
+                {
+                    inputController.AddComponent<InputControllerDrag>();
+                    break;
+                }
+            }
+        
         }
 
     }

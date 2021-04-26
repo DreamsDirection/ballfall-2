@@ -22,7 +22,7 @@ namespace Controllers.UI
             else
                 NewBallPanel.SetActive(false);
 
-            Text.text = "Счет: " + GC.GameScore.ToString();
+            Text.text = "Счет: " + GC.Data.GameScore.ToString();
         }
 
         public override void Close()

@@ -41,7 +41,7 @@ namespace Controllers
             }
         }
 
-        public void Init()
+        public void Init(float positionY = 0, float positionX = 0)
         {
             ball = new Ball()
             {
@@ -56,13 +56,12 @@ namespace Controllers
             _rigidbody2D = TryGetComponent(out Rigidbody2D rb) ? rb : gameObject.AddComponent<Rigidbody2D>();
             if (TryGetComponent(out SpriteRenderer render)) _spriteRenderer = render;
             _rigidbody2D.gravityScale = ball.BallGravity;
-            transform.position = Vector2.zero;
+            transform.position = new Vector3(positionX, positionY, 0);
              _spriteRenderer.color = Color.white;
         }
 
         public void Move(Vector2 direct)
         {
-            Debug.Log("Move");
             var dir = direct * ball.Speed;
             dir.y = _rigidbody2D.velocity.y;
             _rigidbody2D.velocity = Vector2.Lerp(_rigidbody2D.velocity, dir, 0.25f);

@@ -32,7 +32,7 @@ namespace Controllers.UI
         
         public override void Open()
         {
-            TextScore.text = GC.Score.ToString();
+            TextScore.text = GC.Data.Money.ToString();
         }
 
         public override void Close()
@@ -98,7 +98,7 @@ namespace Controllers.UI
                 Buy(id);
             }
 
-            TextScore.text = GC.Score.ToString();
+            TextScore.text = GC.Data.Money.ToString();
             holder.Save();
         }
 
@@ -127,11 +127,11 @@ namespace Controllers.UI
             Cell cell = L_Cells[id].GetComponent<Cell>();
             
             Debug.Log("Buy- " + id);
-            if (GC.Score >= SOItem.Price)
+            if (GC.Data.Money >= SOItem.Price)
             {
                 cell.Buy();
                 item.IsBuy = true;
-                GC.Score -= SOItem.Price;
+                GC.Data.Money -= SOItem.Price;
             }
         }
 
@@ -140,8 +140,8 @@ namespace Controllers.UI
             try
             {
                 int count = holder.ItemsCount;
-                float money = GC.Score;
-                float bonus = GC.GameScore;
+                float money = GC.Data.Money;
+                float bonus = GC.Data.GameScore;
                 for (int i = 0; i < count; i++)
                 {
                     SOItem item = holder.GetItem(i);

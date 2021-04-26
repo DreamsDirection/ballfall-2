@@ -44,19 +44,16 @@ namespace Controllers.UI
             {
                 case 0:
                 {   
-                    GC.controllType = ControllType.Touch;
                     SetControlType<InputControllerTouch>();
                     break;
                 }
                 case 1:
                 {
-                    GC.controllType = ControllType.Accelerometer;
                     SetControlType<InputControllerAccelerometer>();
                     break;
                 }
                 case 2:
                 {
-                    GC.controllType = ControllType.Drag;
                     SetControlType<InputControllerDrag>();
                     break;
                 }

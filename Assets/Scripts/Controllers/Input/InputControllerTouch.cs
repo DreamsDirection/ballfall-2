@@ -11,6 +11,7 @@ namespace Controllers.InputControllers
         private void Start()
         {
             ScreenCenter = Screen.width / 2;
+            InputType = 0;
         }
 
         protected override void InputUpdate()

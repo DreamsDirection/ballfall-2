@@ -1690,7 +1690,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &259704911
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1809,10 +1809,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 10448c9775a775942b246e0afd5d9408, type: 3}
-    m_FontSize: 94
+    m_FontSize: 80
     m_FontStyle: 2
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 8
     m_MaxSize: 105
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -2326,19 +2326,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 374746165}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 914437323}
-        m_TargetAssemblyTypeName: BallFall.Controllers.UI.UI_MainMenu, Assembly-CSharp
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &374746165
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5291,11 +5279,9 @@ MonoBehaviour:
   - {fileID: 3011364548215668325, guid: 3abb8262f2791ba4c9b49bb9b62bebc8, type: 3}
   - {fileID: 3126228207077528989, guid: fb5b51222b57eda4ca60d3bf6477f42d, type: 3}
   - {fileID: 2450153559029847183, guid: 25f33760aafcd7142aa071ad6103583a, type: 3}
-  StartLines:
-  - {fileID: 6985451194314633349, guid: 01c2f79bec0784e43864a6b36f2dff4f, type: 3}
-  - {fileID: 5176040149084122546, guid: b1f9ae7baa9d0284787f11e1a2382659, type: 3}
-  - {fileID: 2608471578169659452, guid: e995c86a0ed7536458c669078b8e9866, type: 3}
+  StartLines: 04000000030000000d000000190000003d00000002000000
   DistanceBetweenPlatforms: 12
+  LastLines: []
 --- !u!4 &665082736
 Transform:
   m_ObjectHideFlags: 0
@@ -5304,7 +5290,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 665082734}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -30, z: 10}
+  m_LocalPosition: {x: 0, y: -60, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 519420032}
@@ -7126,6 +7112,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e46c6c3bfd448fea76939abdabd0afd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayButton: {fileID: 374746164}
+  PlayButtonText: {fileID: 260054836}
 --- !u!222 &914437324
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7930,10 +7918,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8ec534a9929e64ab6fc197d3945d7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GameScore: 0
-  Score: 0
-  BestScore: 0
   inputController: {fileID: 1578137078}
+  Data:
+    Money: 0
+    GameScore: 0
+    BestScore: 0
+    InGame: 0
+    BallPositionX: 0
+    BallPositionY: 0
+    CameraPositionY: 0
+    CamSpeed: 0
+    InputType: 0
+    platforms: []
   BallSpeed: 0
   BallGravity: 0
   CameraStartSpeed: 0
@@ -7942,7 +7938,6 @@ MonoBehaviour:
   Generator: {fileID: 665082735}
   Ball: {fileID: 720089948}
   Camera: {fileID: 519420030}
-  controllType: 0
   GameState: 1
 --- !u!4 &978651807
 Transform:
@@ -11807,6 +11802,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3966dd41863548cd9500182a324bbe87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  InputType: 0
 --- !u!1 &1582340335
 GameObject:
   m_ObjectHideFlags: 0

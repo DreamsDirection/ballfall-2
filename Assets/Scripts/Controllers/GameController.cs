@@ -69,6 +69,11 @@ namespace Controllers
             UI.ShowUI<UIGame>();
         }
 
+        public void RestoreGame()
+        {
+            
+        }
+
 
         public void Death()
         {

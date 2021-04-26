@@ -57,7 +57,7 @@ namespace Controllers
             if (TryGetComponent(out SpriteRenderer render)) _spriteRenderer = render;
             _rigidbody2D.gravityScale = ball.BallGravity;
             transform.position = Vector2.zero;
-            
+             _spriteRenderer.color = Color.white;
         }
 
         public void Move(Vector2 direct)

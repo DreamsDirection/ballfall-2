@@ -37,7 +37,7 @@ public class StartSettingsController : MonoBehaviour
         
         Model.BallSpeed = (float) Convert.ToDouble(SpeedInputField.text);
         Model.BallGravity = (float) Convert.ToDouble(GravityInputField.text);
-        Model.CameraStartSpeed = (float) Convert.ToDouble(CamStartSpeed.text);
+        Model.CamStartSpeed = (float) Convert.ToDouble(CamStartSpeed.text);
         GC.CameraSpeedMultiplier = (float) Convert.ToDouble(CamSpeedMultiplier.text);
         GC.CameraMaxSpeed = (float) Convert.ToDouble(CamMaxSpeed.text);
         Save();

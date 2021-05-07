@@ -1,13 +1,18 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Controllers;
 using Items.Models;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Настройки основных параметров
+/// Только для тестов
+///     Удалить в релизе!!!!
+/// </summary>
+
 public class StartSettingsController : MonoBehaviour
 {
+    
     public InputField GravityInputField;
     public InputField SpeedInputField;
     public InputField CamStartSpeed;
@@ -28,18 +33,19 @@ public class StartSettingsController : MonoBehaviour
 
     public void Setup()
     {
-        GC.BallSpeed = (float) Convert.ToDouble(SpeedInputField.text);
-        GC.BallGravity = (float) Convert.ToDouble(GravityInputField.text);
-        GC.CameraStartSpeed = (float) Convert.ToDouble(CamStartSpeed.text);
-        GC.CameraSpeedMultiplier = (float) Convert.ToDouble(CamSpeedMultiplier.text);
-        GC.CameraMaxSpeed = (float) Convert.ToDouble(CamMaxSpeed.text);
-        
-        
         Model.BallSpeed = (float) Convert.ToDouble(SpeedInputField.text);
         Model.BallGravity = (float) Convert.ToDouble(GravityInputField.text);
         Model.CamStartSpeed = (float) Convert.ToDouble(CamStartSpeed.text);
-        GC.CameraSpeedMultiplier = (float) Convert.ToDouble(CamSpeedMultiplier.text);
-        GC.CameraMaxSpeed = (float) Convert.ToDouble(CamMaxSpeed.text);
+        Model.CamSpeedMultiplier = (float) Convert.ToDouble(CamSpeedMultiplier.text);
+        Model.CamMaxSpeed = (float) Convert.ToDouble(CamMaxSpeed.text);
+
+
+        GC.BallSpeed = Model.BallSpeed;
+        GC.BallGravity = Model.BallGravity;
+        GC.CameraStartSpeed = Model.CamStartSpeed;
+        GC.CameraSpeedMultiplier = Model.CamSpeedMultiplier;
+        GC.CameraMaxSpeed = Model.CamMaxSpeed;
+        
         Save();
     }
 
@@ -70,4 +76,5 @@ public class StartSettingsController : MonoBehaviour
     {
         Save();
     }
+    
 }

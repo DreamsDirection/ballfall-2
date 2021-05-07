@@ -1131,6 +1131,12 @@ MonoBehaviour:
   CamStartSpeed: {fileID: 932525201}
   CamSpeedMultiplier: {fileID: 611453803}
   CamMaxSpeed: {fileID: 735039760}
+  Model:
+    BallSpeed: 0
+    BallGravity: 0
+    CamStartSpeed: 0
+    CamMaxSpeed: 0
+    CamSpeedMultiplier: 0
 --- !u!114 &191407103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2889,18 +2895,6 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 191407102}
-        m_TargetAssemblyTypeName: StartSettings, Assembly-CSharp
-        m_MethodName: Load
-        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -10230,7 +10224,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 191407102}
-        m_TargetAssemblyTypeName: StartSettings, Assembly-CSharp
+        m_TargetAssemblyTypeName: StartSettingsController, Assembly-CSharp
         m_MethodName: Setup
         m_Mode: 1
         m_Arguments:

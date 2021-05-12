@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Controllers.InputControllers;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Controllers.UI
 {
@@ -9,9 +10,16 @@ namespace Controllers.UI
     {
 
         public GameObject SoundSlider;
+        public Button InputTouchButton;
+        public Button InputAccelerometerButton;
+        public Button InputDragButton;
         private void Start()
         {
-            SetControlType<InputControllerTouch>();
+            var id = GameController.GC.Data.InputType;
+            if(id != null)
+                SetControll(id);
+            else 
+                SetControlType<InputControllerTouch>();
         }
         
         public override void Open()
@@ -45,16 +53,31 @@ namespace Controllers.UI
                 case 0:
                 {   
                     SetControlType<InputControllerTouch>();
+                    
+                    InputTouchButton.interactable = false;
+                    InputAccelerometerButton.interactable = true;
+                    InputDragButton.interactable = true;
+                    
                     break;
                 }
                 case 1:
                 {
                     SetControlType<InputControllerAccelerometer>();
+                    
+                    InputTouchButton.interactable = true;
+                    InputAccelerometerButton.interactable = false;
+                    InputDragButton.interactable = true;
+                    
                     break;
                 }
                 case 2:
                 {
                     SetControlType<InputControllerDrag>();
+                    
+                    InputTouchButton.interactable = true;
+                    InputAccelerometerButton.interactable = true;
+                    InputDragButton.interactable = false;
+                    
                     break;
                 }
             }

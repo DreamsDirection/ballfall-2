@@ -63,6 +63,7 @@ namespace Controllers.UI
                     ui.gameObject.SetActive(false);
                 }
             }
+            GameController.GC.Save();
         }
 
         public T GetUI<T>() where T : UIBase

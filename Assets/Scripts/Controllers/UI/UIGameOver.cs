@@ -13,6 +13,7 @@ namespace Controllers.UI
     {
         public GameObject NewBallPanel;
         public Text Text;
+        public Text Text_BestScore;
 
         public override void Open()
         {
@@ -23,6 +24,7 @@ namespace Controllers.UI
                 NewBallPanel.SetActive(false);
 
             Text.text = "Счет: " + GC.Data.GameScore.ToString();
+            Text_BestScore.text = "Лучший счет: " + GC.Data.BestScore.ToString();
         }
 
         public override void Close()

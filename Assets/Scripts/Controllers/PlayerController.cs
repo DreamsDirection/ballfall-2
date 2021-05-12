@@ -26,6 +26,7 @@ namespace Controllers
 
 
         private float _timer;
+        private float shieldTimer;
 
         void Start()
         {
@@ -37,7 +38,10 @@ namespace Controllers
         {
             if (state == GameState.Play)
             {
-                _timer -= Time.deltaTime;
+                var t = Time.deltaTime;
+                _timer -= t;
+                shieldTimer -= t;
+                if (shieldTimer <= 0) ball.Shield = false;
             }
         }
 
@@ -50,7 +54,8 @@ namespace Controllers
                 Health = 3,
                 IsDebug = false,
                 Shield = false,
-                Speed = GC.BallSpeed
+                Speed = GC.BallSpeed,
+                ShieldTime = 1
             };
             if (!_uiGame) _uiGame = UIController.UI.GetUI<UIGame>();
             _rigidbody2D = TryGetComponent(out Rigidbody2D rb) ? rb : gameObject.AddComponent<Rigidbody2D>();
@@ -70,24 +75,22 @@ namespace Controllers
 
         public void MakeDamage()
         {
-            if (!ball.Shield && _timer <= 0)
+            if (_timer <= 0)
             {
-                ball.Health--;
-                if (ball.Health <= 0)
+
+                if (!ball.Shield)
                 {
-                    GC.Death();
+                    ball.Health--;
+                    if (ball.Health <= 0)
+                    {
+                        GC.Death();
+                    }
+                    else
+                    {
+                        _uiGame.ChangeHealth();
+                        _timer = ball.AttackInterval;
+                    }
                 }
-                else
-                {
-                    _uiGame.ChangeHealth();
-                    _timer = ball.AttackInterval;
-                }
-            }
-            else if (ball.Shield)
-            {
-                ball.Shield = false;
-                _spriteRenderer.color = Color.white;
-                _timer = ball.AttackInterval;
             }
             else
             {
@@ -140,6 +143,7 @@ namespace Controllers
                 case "Shield":
                 {
                     Destroy(other.gameObject);
+                    shieldTimer = ball.ShieldTime;
                     ball.Shield = true;
                     _spriteRenderer.color = Color.green;
                     break;
